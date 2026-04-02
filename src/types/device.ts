@@ -200,9 +200,89 @@ export interface JsonRpcEvent {
     source?: string;
 }
 
-/** 导航参数类型 */
+/** 产品类型枚举（已知产品类型） */
+export type ProductType = 'jraicontroller' | 'audiomixer' | 'videoprocessor' | 'electricalCabinet' | string;
+
+/** 通信协议类型 */
+export type ProtocolType = 'websocket' | 'http' | 'udp' | 'tcp';
+
+/** 设备连接状态 */
+export type ConnectionState = 'disconnected' | 'connecting' | 'connected' | 'error';
+
+/** 设备适配器事件回调 */
+export type AdapterEventCallback = (event: string, data: unknown) => void;
+
+/** 设备适配器接口 - UI层通过此接口与设备通信 */
+export interface IDeviceAdapter {
+    /** 连接设备 */
+    connect(): Promise<void>;
+    /** 断开连接 */
+    disconnect(): void;
+    /** 调用设备方法 */
+    call<T = unknown>(method: string, params?: Record<string, unknown>): Promise<T>;
+    /** 订阅设备事件 */
+    subscribe(event: string, callback: AdapterEventCallback): void;
+    /** 取消订阅 */
+    unsubscribe(event: string, callback: AdapterEventCallback): void;
+    /** 获取连接状态 */
+    getConnectionState(): ConnectionState;
+    /** 设置认证Token */
+    setToken(token: string): void;
+    /** 使用的协议类型 */
+    readonly protocolType: ProtocolType;
+}
+
+/** 设备插件页面定义 */
+export interface DevicePluginPage {
+    /** 页面唯一标识 */
+    id: string;
+    /** 显示标题 */
+    title: string;
+    /** 图标名称 */
+    icon: string;
+    /** 页面组件名（用于动态加载） */
+    componentName: string;
+    /** 排序权重 */
+    order?: number;
+}
+
+/** 设备插件定义 */
+export interface DevicePlugin {
+    /** 产品类型 */
+    productType: string;
+    /** 插件名称 */
+    name: string;
+    /** 插件页面列表 */
+    pages: DevicePluginPage[];
+    /** 创建设备适配器的工厂方法 */
+    createAdapter(device: Device): IDeviceAdapter;
+}
+
+/** 主Tab导航参数 */
+export type MainTabParamList = {
+    Hub: undefined;
+    Devices: undefined;
+    Stage: undefined;
+    Settings: { section?: string };
+};
+
+/** 设备详情栈导航参数 */
+export type DeviceDetailParamList = {
+    DeviceOverview: { deviceId: string };
+    DeviceControl: { deviceId: string };
+};
+
+/** 全局模态栈导航参数 */
+export type ModalParamList = {
+    DeviceScan: undefined;
+    LoginModal: { deviceId: string };
+};
+
+/** 根导航参数 */
 export type RootStackParamList = {
-    Home: undefined;
-    Scan: undefined;
-    Device: { device: Device };
+    Main: undefined;
+    DeviceDetail: { deviceId: string };
+    DeviceControl: { deviceId: string; interaction: InteractionMode };
+    DeviceScan: undefined;
+    LoginModal: { deviceId: string };
 };

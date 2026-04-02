@@ -15,14 +15,23 @@ import {
     Alert,
     StatusBar,
     ActivityIndicator,
+    Platform,
 } from 'react-native';
-import { WebView } from 'react-native-webview';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import theme, { spacing, borderRadius, fontSize } from '../constants/theme';
 import { useApi } from '../hooks/useApi';
 import { login } from '../services/api';
 import { QuickAction } from '../components/QuickAction';
+
+// WebView 仅在原生平台可用
+let WebViewComponent: React.ComponentType<any> | null = null;
+try {
+    WebViewComponent = require('react-native-webview').WebView;
+} catch {
+    WebViewComponent = null;
+}
+const isNativePlatform = Platform.OS === 'android' || Platform.OS === 'ios';
 import type { Device, RootStackParamList, InteractionMode } from '../types/device';
 
 type DeviceRouteProp = RouteProp<RootStackParamList, 'Device'>;
@@ -156,19 +165,32 @@ export function DeviceScreen() {
     /** 渲染 WebView 模式 */
     const renderWebview = () => (
         <View style={styles.webviewContainer}>
-            <WebView
-                source={{ uri: webviewUrl }}
-                injectedJavaScript={injectedJavaScript}
-                onMessage={handleWebViewMessage}
-                startInLoadingState={true}
-                renderLoading={() => (
-                    <View style={styles.loadingOverlay}>
-                        <ActivityIndicator size="large" color={theme.primary} />
-                        <Text style={styles.loadingText}>加载中...</Text>
-                    </View>
-                )}
-                style={styles.webview}
-            />
+            {isNativePlatform && WebViewComponent ? (
+                <WebViewComponent
+                    source={{ uri: webviewUrl }}
+                    injectedJavaScript={injectedJavaScript}
+                    onMessage={handleWebViewMessage}
+                    startInLoadingState={true}
+                    renderLoading={() => (
+                        <View style={styles.loadingOverlay}>
+                            <ActivityIndicator size="large" color={theme.primary} />
+                            <Text style={styles.loadingText}>加载中...</Text>
+                        </View>
+                    )}
+                    style={styles.webview}
+                />
+            ) : (
+                <iframe
+                    src={webviewUrl}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                        backgroundColor: theme.background,
+                    }}
+                    title={device.deviceName}
+                />
+            )}
         </View>
     );
 
