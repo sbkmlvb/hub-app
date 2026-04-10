@@ -23,15 +23,50 @@
       },
       "package": "com.jrai.hubapp",
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.CHANGE_WIFI_MULTICAST_STATE"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "static",
+      "name": "JRAi Hub",
+      "shortName": "JRAi Hub",
+      "backgroundColor": "#1e1e2e",
+      "themeColor": "#7c5cfc",
+      "startUrl": "./",
+      "display": "standalone",
+      "orientation": "any"
+    },
+    "plugins": [
+      [
+        "expo-updates",
+        {
+          "username": "jrai"
+        }
+      ]
+    ],
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 0,
+      "url": "https://update.jrai.com/api/expo-updates"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     },
     "extra": {
       "eas": {
         "projectId": "hub-app"
-      }
+      },
+      "updateServerUrl": "https://update.jrai.com",
+      "apkDownloadUrl": "https://update.jrai.com/api/apk/latest"
     }
   }
 }

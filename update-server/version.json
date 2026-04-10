@@ -1,0 +1,7 @@
+{
+  "versionCode": 1,
+  "versionName": "1.0.0",
+  "apkFileName": "JRAiHub-release.apk",
+  "updateLog": "v1.0.0 首个版本\n- 设备管理功能\n- 设备扫描与添加\n- 设备控制界面",
+  "forceUpdate": false
+}

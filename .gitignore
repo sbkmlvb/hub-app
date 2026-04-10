@@ -39,3 +39,14 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Android build artifacts
+android/app/build/
+android/build/
+android/.gradle/
+android/app/release-key.jks
+*.apk
+JRAiHub-release.apk
+
+# Update server
+update-server/node_modules/
